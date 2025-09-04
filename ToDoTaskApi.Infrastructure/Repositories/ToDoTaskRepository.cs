@@ -32,14 +32,17 @@ namespace ToDoTaskApi.Infrastructure.Repositories
             return await _toDoTasks.ToListAsync();
         }
 
-        public async Task<ToDoTask> GetById(Guid id)
+        public async Task<ToDoTask?> GetById(Guid id)
         {
-            return await _toDoTasks.FirstAsync(x => x.Id == id);
+            return await _toDoTasks.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task Update(ToDoTask toDoTask)
+        public async Task<bool> Update(ToDoTask toDoTask)
         {
-            var forUpdate = await _toDoTasks.FirstAsync(p => p.Id == toDoTask.Id);
+            var forUpdate = await _toDoTasks.FirstOrDefaultAsync(p => p.Id == toDoTask.Id);
+            if (forUpdate is null)
+                return false;
+
             forUpdate.Title = toDoTask.Title;
             forUpdate.Description = toDoTask.Description;
             forUpdate.ExpirationDate = toDoTask.ExpirationDate;
@@ -47,6 +50,7 @@ namespace ToDoTaskApi.Infrastructure.Repositories
             forUpdate.IsCompleted = toDoTask.IsCompleted;
 
             await _doTaskApiDbContext.SaveChangesAsync();
+            return true;
         }
     }
 }

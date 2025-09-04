@@ -2,7 +2,8 @@ using MediatR;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using ToDoTaskApi.Application.Managements.Commands.CreateToDoTask;
-using ToDoTaskApi.Application.Managements.Queries.GetAllToDoTaks;
+using ToDoTaskApi.Application.Managements.Queries.GetAllToDoTask;
+using ToDoTaskApi.Application.Managements.Queries.GetToDoTaskById;
 
 namespace ToDoTaskApi.Controllers
 {
@@ -23,14 +24,14 @@ namespace ToDoTaskApi.Controllers
         [Route("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            throw new NotImplementedException();
+            var request = new GetToDoTaskByIdRequest(id);
+            return Ok(await _mediator.Send(request));
         }
 
         [HttpPost]
         public async Task<IActionResult> Add(CreateToDoTaskRequest request)
         {
-            var t = await _mediator.Send(request);
-            return Ok(t);
+            return Ok(await _mediator.Send(request)); ;
         }
     }
 }

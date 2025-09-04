@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MediatR;
 using ToDoTaskApi.Application.DTO;
 
-namespace ToDoTaskApi.Application.Managements.Queries.GetAllToDoTaks
+namespace ToDoTaskApi.Application.Managements.Queries.GetToDoTaskById
 {
-    public record GetAllToDoTasksRequest() : IRequest<IEnumerable<ToDoTaskDTO>>;
+    public record GetToDoTaskByIdRequest(Guid Id) : IRequest<ToDoTaskDTO>;
 }

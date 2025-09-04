@@ -8,7 +8,7 @@ using ToDoTaskApi.Application.DTO;
 using ToDoTaskApi.Application.Mappers;
 using ToDoTaskApi.Domain.Interfaces;
 
-namespace ToDoTaskApi.Application.Managements.Queries.GetAllToDoTaks
+namespace ToDoTaskApi.Application.Managements.Queries.GetAllToDoTask
 {
     public class GetAllToDoTasksHandler(IToDoTaskRepository toDoTaskRepository) : IRequestHandler<GetAllToDoTasksRequest, IEnumerable<ToDoTaskDTO>>
     {
