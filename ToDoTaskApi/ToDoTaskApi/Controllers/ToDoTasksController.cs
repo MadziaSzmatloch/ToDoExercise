@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using ToDoTaskApi.Application.Managements.Commands.CreateToDoTask;
+using ToDoTaskApi.Application.Managements.Queries.GetAllToDoTaks;
 
 namespace ToDoTaskApi.Controllers
 {
@@ -12,9 +13,10 @@ namespace ToDoTaskApi.Controllers
         private readonly IMediator _mediator = mediator;
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAll()
         {
-            throw new NotImplementedException();
+            var tasks = await _mediator.Send(new GetAllToDoTasksRequest());
+            return Ok(tasks);
         }
 
         [HttpGet]
