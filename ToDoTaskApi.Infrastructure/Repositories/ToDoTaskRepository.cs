@@ -20,24 +20,33 @@ namespace ToDoTaskApi.Infrastructure.Repositories
             await _doTaskApiDbContext.SaveChangesAsync();
         }
 
-        public Task Delete(Guid Id)
+        public async Task Delete(Guid id)
         {
-            throw new NotImplementedException();
+            var forDelete = await _toDoTasks.FirstAsync(x => x.Id == id);
+            _toDoTasks.Remove(forDelete);
+            await _doTaskApiDbContext.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<ToDoTask>> GetAll()
+        public async Task<IEnumerable<ToDoTask>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _toDoTasks.ToListAsync();
         }
 
-        public Task<ToDoTask> GetById(Guid Id)
+        public async Task<ToDoTask> GetById(Guid id)
         {
-            throw new NotImplementedException();
+            return await _toDoTasks.FirstAsync(x => x.Id == id);
         }
 
-        public Task Update(ToDoTask toDoTask)
+        public async Task Update(ToDoTask toDoTask)
         {
-            throw new NotImplementedException();
+            var forUpdate = await _toDoTasks.FirstAsync(p => p.Id == toDoTask.Id);
+            forUpdate.Title = toDoTask.Title;
+            forUpdate.Description = toDoTask.Description;
+            forUpdate.ExpirationDate = toDoTask.ExpirationDate;
+            forUpdate.PercentOfCompletness = toDoTask.PercentOfCompletness;
+            forUpdate.IsCompleted = toDoTask.IsCompleted;
+
+            await _doTaskApiDbContext.SaveChangesAsync();
         }
     }
 }

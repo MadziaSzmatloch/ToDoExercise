@@ -17,12 +17,7 @@ namespace ToDoTaskApi.Application.Managements.Commands.CreateToDoTask
 
         public async Task<ToDoTaskDTO> Handle(CreateToDoTaskRequest request, CancellationToken cancellationToken)
         {
-            var product = new ToDoTask()
-            {
-                Title = request.Title,
-                Description = request.Description,
-                ExpirationDate = request.ExpirationDate,
-            };
+            var product = new ToDoTask(request.Title, request.Description, request.ExpirationDate);
 
             await _toDoTaskRepository.Add(product);
 
