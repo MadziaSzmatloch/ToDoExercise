@@ -7,5 +7,6 @@ namespace ToDoTaskApi.Application.Mappers
     public partial class ToDoTaskMapper
     {
         public partial DTO.ToDoTaskDTO ToDoTaskToToDoTaskDto(ToDoTask toDoTask);
+        public partial ToDoTask ToDoTaskDtoToToDoTask(DTO.ToDoTaskDTO toDoTaskDto);
     }
 }
