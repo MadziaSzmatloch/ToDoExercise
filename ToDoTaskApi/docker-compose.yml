@@ -1,0 +1,20 @@
+services:
+  todotaskapi:
+    image: ${DOCKER_REGISTRY-}todotaskapi
+    build:
+      context: .
+      dockerfile: ToDoTaskApi/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+
+  todotaskapi.database:
+    image: postgres:latest
+    environment:
+        - POSTGRES_DB=tododatabase
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+    volumes:
+        - ./.containers/todo-db:/var/lib/posgresql/data
+    ports:
+     - "5432:5432"
