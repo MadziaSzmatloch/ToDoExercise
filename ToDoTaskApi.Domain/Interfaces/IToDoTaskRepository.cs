@@ -8,6 +8,6 @@ namespace ToDoTaskApi.Domain.Interfaces
         public Task<ToDoTask?> GetById(Guid id);
         public Task Add(ToDoTask toDoTask);
         public Task<bool> Update(ToDoTask toDoTask);
-        public Task Delete(Guid id);
+        public Task<bool> Delete(Guid id);
     }
 }

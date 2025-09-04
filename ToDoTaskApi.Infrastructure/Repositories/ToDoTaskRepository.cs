@@ -20,11 +20,14 @@ namespace ToDoTaskApi.Infrastructure.Repositories
             await _doTaskApiDbContext.SaveChangesAsync();
         }
 
-        public async Task Delete(Guid id)
+        public async Task<bool> Delete(Guid id)
         {
             var forDelete = await _toDoTasks.FirstAsync(x => x.Id == id);
+            if (forDelete is null)
+                return false;
             _toDoTasks.Remove(forDelete);
             await _doTaskApiDbContext.SaveChangesAsync();
+            return true;
         }
 
         public async Task<IEnumerable<ToDoTask>> GetAll()

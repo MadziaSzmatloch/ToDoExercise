@@ -2,6 +2,8 @@ using MediatR;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using ToDoTaskApi.Application.Managements.Commands.CreateToDoTask;
+using ToDoTaskApi.Application.Managements.Commands.DeleteToDoTask;
+using ToDoTaskApi.Application.Managements.Commands.MarkToDoTaskAsDone;
 using ToDoTaskApi.Application.Managements.Commands.SetToDoTaskPercent;
 using ToDoTaskApi.Application.Managements.Commands.UpdateToDoTask;
 using ToDoTaskApi.Application.Managements.Queries.GetAllToDoTask;
@@ -47,6 +49,21 @@ namespace ToDoTaskApi.Controllers
         public async Task<IActionResult> SetToDoPercentage(SetToDoTaskPercentRequest request)
         {
             return Ok(await _mediator.Send(request)); ;
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var request = new DeleteToDoTaskRequest(id);
+            return Ok(await _mediator.Send(request));
+        }
+
+        [HttpPatch]
+        [Route("markAsDone")]
+        public async Task<IActionResult> MarkAsDone(Guid id)
+        {
+            var request = new MarkToDoTaskAsDoneRequest(id);
+            return Ok(await _mediator.Send(request));
         }
     }
 }
