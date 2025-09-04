@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MediatR;
 using ToDoTaskApi.Application.DTO;
+using ToDoTaskApi.Application.Exceptions;
 using ToDoTaskApi.Application.Mappers;
 using ToDoTaskApi.Domain.Interfaces;
 
@@ -20,13 +21,14 @@ namespace ToDoTaskApi.Application.Managements.Commands.MarkToDoTaskAsDone
             var task = await _toDoTaskRepository.GetById(request.id);
 
             if (task == null)
-                throw new Exception("not found"); //TODO: exception
+                throw new NotFoundException("Task with given id doesn't exist");
 
             task.IsCompleted = true;
+            task.PercentOfCompletness = 100;
 
             if (!await _toDoTaskRepository.Update(task))
             {
-                throw new Exception("Not found"); //TODO excpetion
+                throw new NotFoundException("Task with given id doesn't exist");
             }
 
             return mapper.ToDoTaskToToDoTaskDto(task);

@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
 
 namespace ToDoTaskApi.Domain.Entities
 {
@@ -15,7 +16,7 @@ namespace ToDoTaskApi.Domain.Entities
             set
             {
                 if (value < 0 || value > 100)
-                    throw new ArgumentOutOfRangeException(nameof(PercentOfCompletness), "Value must be between 0 and 100.");
+                    throw new ValidationException("Value must be between 0 and 100.");
                 _percentOfCompletness = value;
             }
         }
@@ -30,7 +31,7 @@ namespace ToDoTaskApi.Domain.Entities
             Title = title;
             Description = description;
             ExpirationDate = expirationDate;
-            PercentOfCompletness = percentOfCompletness;
+            PercentOfCompletness = percentOfCompletness; 
             IsCompleted = isCompleted;
         }
 

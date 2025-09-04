@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MediatR;
 using ToDoTaskApi.Application.DTO;
+using ToDoTaskApi.Application.Exceptions;
 using ToDoTaskApi.Application.Mappers;
 using ToDoTaskApi.Domain.Interfaces;
 
@@ -19,7 +20,7 @@ namespace ToDoTaskApi.Application.Managements.Queries.GetToDoTaskById
             var task = await _toDoTaskRepository.GetById(request.Id);
             if (task == null)
             {
-                throw new Exception(); //TODO: Exception
+                throw new NotFoundException("Task with given id doesn't exist");
             }
 
             var mapper = new ToDoTaskMapper();

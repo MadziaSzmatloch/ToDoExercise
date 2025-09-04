@@ -58,6 +58,11 @@ namespace ToDoTaskApi.Controllers
             return Ok(await _mediator.Send(request));
         }
 
+        /// <summary>
+        /// Oznacza zadanie jako wykonane.
+        /// </summary>
+        /// <param name="id">Identyfikator zadania</param>
+        /// <returns>Status operacji</returns>
         [HttpPatch]
         [Route("markAsDone")]
         public async Task<IActionResult> MarkAsDone(Guid id)

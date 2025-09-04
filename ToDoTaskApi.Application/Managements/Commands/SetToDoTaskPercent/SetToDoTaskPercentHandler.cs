@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MediatR;
 using ToDoTaskApi.Application.DTO;
+using ToDoTaskApi.Application.Exceptions;
 using ToDoTaskApi.Application.Mappers;
 using ToDoTaskApi.Domain.Interfaces;
 
@@ -19,8 +20,8 @@ namespace ToDoTaskApi.Application.Managements.Commands.SetToDoTaskPercent
             var mapper = new ToDoTaskMapper();
             var task = await _toDoTaskRepository.GetById(request.id);
 
-            if (task == null) 
-                throw new Exception("not found"); //TODO: exception
+            if (task == null)
+                throw new NotFoundException("Task with given id doesn't exist");
 
             task.PercentOfCompletness = request.percentage;
 
@@ -30,7 +31,7 @@ namespace ToDoTaskApi.Application.Managements.Commands.SetToDoTaskPercent
             }
             else
             {
-                throw new Exception("Not found"); //TODO excpetion
+                throw new NotFoundException("Task with given id doesn't exist");
             }
         }
     }

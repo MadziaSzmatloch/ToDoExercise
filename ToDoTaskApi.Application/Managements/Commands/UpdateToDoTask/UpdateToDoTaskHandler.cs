@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MediatR;
 using ToDoTaskApi.Application.DTO;
+using ToDoTaskApi.Application.Exceptions;
 using ToDoTaskApi.Application.Mappers;
 using ToDoTaskApi.Domain.Interfaces;
 
@@ -25,7 +26,7 @@ namespace ToDoTaskApi.Application.Managements.Commands.UpdateToDoTask
             }
             else
             {
-                throw new Exception("Not found"); //TODO excpetion
+                throw new NotFoundException("Task with given id doesn't exist");
             }
            
         }

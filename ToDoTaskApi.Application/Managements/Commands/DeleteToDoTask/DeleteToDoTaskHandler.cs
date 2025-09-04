@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MediatR;
+using ToDoTaskApi.Application.Exceptions;
 using ToDoTaskApi.Domain.Interfaces;
 
 namespace ToDoTaskApi.Application.Managements.Commands.DeleteToDoTask
@@ -16,7 +17,7 @@ namespace ToDoTaskApi.Application.Managements.Commands.DeleteToDoTask
         {
             if(!await _toDoTaskRepository.Delete(request.id))
             {
-                throw new Exception("not found"); //TODDO exception
+                throw new NotFoundException("Task with given id doesn't exist");
             }
             return Unit.Value;
         }
