@@ -6,6 +6,7 @@ using ToDoTaskApi.Infrastructure.Repositories;
 
 namespace ToDoTaskApi.Infrastructure
 {
+    // Extension method for registering infrastructure layer services in the DI container (DbContext, migrations, repositories).
     public static class Extensions
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)

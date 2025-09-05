@@ -2,6 +2,9 @@
 
 namespace ToDoTaskApi.Domain.Interfaces
 {
+    // IRepository defines the contract for data access operations. 
+    // It abstracts the persistence logic so that higher layers 
+    //  don’t depend on the database directly.
     public interface IToDoTaskRepository
     {
         public Task<IEnumerable<ToDoTask>> GetAll();

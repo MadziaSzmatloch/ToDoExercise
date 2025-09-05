@@ -3,22 +3,16 @@ using ToDoTaskApi.Domain.Entities;
 
 namespace ToDoTaskApi.Infrastructure
 {
+    // EF Core DbContext representing the database of the application.
     public class ToDoTaskApiDbContext : DbContext
     {
-        public ToDoTaskApiDbContext()
-        {
-
-        }
-
+        // Constructor with options passed from DI
         public ToDoTaskApiDbContext(DbContextOptions options)
             : base(options)
         { }
 
 
+        // Represents the ToDoTasks table in the database.
         public DbSet<ToDoTask> ToDoTasks { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-        }
     }
 }

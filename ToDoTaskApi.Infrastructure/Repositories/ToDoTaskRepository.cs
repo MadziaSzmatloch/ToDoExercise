@@ -9,6 +9,9 @@ using ToDoTaskApi.Domain.Interfaces;
 
 namespace ToDoTaskApi.Infrastructure.Repositories
 {
+    // Repository is a concrete implementation of IRepository. 
+    // It contains the actual logic for interacting with the database.
+    // This ensures clean separation between the domain logic and data access layer.
     internal class ToDoTaskRepository(ToDoTaskApiDbContext doTaskApiDbContext) : IToDoTaskRepository
     {
         private readonly ToDoTaskApiDbContext _doTaskApiDbContext = doTaskApiDbContext;

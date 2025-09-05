@@ -3,16 +3,22 @@ using ToDoTaskApi.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// Add infrastructure and application layers
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
+
 builder.Services.AddControllers();
+
+// Add support for Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.EnableAnnotations();
+});
 
 var app = builder.Build();
 
+// Enable Swagger UI only in development environment
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

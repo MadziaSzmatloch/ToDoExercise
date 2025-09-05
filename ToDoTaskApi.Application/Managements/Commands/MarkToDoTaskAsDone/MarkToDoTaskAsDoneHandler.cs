@@ -18,10 +18,7 @@ namespace ToDoTaskApi.Application.Managements.Commands.MarkToDoTaskAsDone
         public async Task<ToDoTaskDTO> Handle(MarkToDoTaskAsDoneRequest request, CancellationToken cancellationToken)
         {
             var mapper = new ToDoTaskMapper();
-            var task = await _toDoTaskRepository.GetById(request.id);
-
-            if (task == null)
-                throw new NotFoundException("Task with given id doesn't exist");
+            var task = await _toDoTaskRepository.GetById(request.id) ?? throw new NotFoundException("Task with given id doesn't exist");
 
             task.IsCompleted = true;
             task.PercentOfCompletness = 100;
