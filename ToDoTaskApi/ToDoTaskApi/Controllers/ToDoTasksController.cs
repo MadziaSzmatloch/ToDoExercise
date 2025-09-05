@@ -8,7 +8,9 @@ using ToDoTaskApi.Application.Managements.Commands.MarkToDoTaskAsDone;
 using ToDoTaskApi.Application.Managements.Commands.SetToDoTaskPercent;
 using ToDoTaskApi.Application.Managements.Commands.UpdateToDoTask;
 using ToDoTaskApi.Application.Managements.Queries.GetAllToDoTask;
+using ToDoTaskApi.Application.Managements.Queries.GetIncomingToDoTask;
 using ToDoTaskApi.Application.Managements.Queries.GetToDoTaskById;
+using ToDoTaskApi.Domain.Enums;
 
 namespace ToDoTaskApi.Controllers
 {
@@ -85,5 +87,16 @@ namespace ToDoTaskApi.Controllers
             var request = new MarkToDoTaskAsDoneRequest(id);
             return Ok(await _mediator.Send(request));
         }
+
+        [HttpGet("incoming")]
+        [SwaggerOperation(Summary = "Gets incoming ToDo tasks", Description = "Returns tasks for today, next day, or current week based on the 'period' query parameter.")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetIncoming([FromQuery] ToDoTaskPeriod period)
+        {
+            var tasks = await _mediator.Send(new GetIncomingToDoTaskRequest(period));
+            return Ok(tasks);
+        }
+
     }
 }

@@ -43,6 +43,11 @@ namespace ToDoTaskApi.Infrastructure.Repositories
             return await _toDoTasks.FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<IEnumerable<ToDoTask>> GetTasksForPeriod(DateTime startDate, DateTime endDate)
+        {
+            return await _toDoTasks.Where(x => x.ExpirationDate >= startDate && x.ExpirationDate <= endDate).ToListAsync();
+        }
+
         public async Task<bool> Update(ToDoTask toDoTask)
         {
             var forUpdate = await _toDoTasks.FirstOrDefaultAsync(p => p.Id == toDoTask.Id);

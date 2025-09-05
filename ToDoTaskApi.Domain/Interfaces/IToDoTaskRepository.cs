@@ -9,6 +9,7 @@ namespace ToDoTaskApi.Domain.Interfaces
     {
         public Task<IEnumerable<ToDoTask>> GetAll();
         public Task<ToDoTask?> GetById(Guid id);
+        public Task<IEnumerable<ToDoTask>> GetTasksForPeriod(DateTime startDate, DateTime endDate);
         public Task Add(ToDoTask toDoTask);
         public Task<bool> Update(ToDoTask toDoTask);
         public Task<bool> Delete(Guid id);
