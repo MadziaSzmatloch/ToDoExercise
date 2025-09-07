@@ -155,7 +155,7 @@ namespace ToDoTaskApi.Tests
             var result = async () => await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            result.Should().ThrowAsync<ValidationException>();
+            await result.Should().ThrowAsync<ValidationException>();
             mockRepo.Verify(r => r.GetById(task.Id), Times.Once);
         }
 
