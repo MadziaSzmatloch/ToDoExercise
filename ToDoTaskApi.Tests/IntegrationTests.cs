@@ -6,6 +6,8 @@ using ToDoTaskApi.Application.Managements.Commands.CreateToDoTask;
 using ToDoTaskApi.Application.Managements.Commands.UpdateToDoTask;
 using ToDoTaskApi.Application.Managements.Commands.SetToDoTaskPercent;
 using ToDoTaskApi.Domain.Enums;
+using System.Diagnostics;
+using System.Net;
 
 namespace ToDoTaskApi.Tests
 {
@@ -45,7 +47,20 @@ namespace ToDoTaskApi.Tests
 
             // Assert
             response.Content.Should().BeOfType<ToDoTaskDTO>();
+        }
 
+        [Fact]
+        public async Task CreateProductWithWrongExpirationDate()
+        {
+            // Arrange
+            var request = new CreateToDoTaskRequest("Do groceries", "Buy milk, bread and eggs", DateTime.UtcNow.AddHours(-2));
+
+            // Act
+            var response = await _myNewApi.CreateTask(request);
+
+            // Assert
+            Debugger.Launch();
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
         [Fact]
@@ -74,6 +89,73 @@ namespace ToDoTaskApi.Tests
         }
 
         [Fact]
+        public async Task UpdateNotExistingTask()
+        {
+            // Arrange
+            var request = new UpdateToDoTaskRequest(new ToDoTaskDTO()
+            {
+                Id = Guid.NewGuid(),
+                Title = "New title",
+                Description = "Desc",
+                ExpirationDate = DateTime.UtcNow.AddDays(1),
+                PercentOfCompletness = 10,
+                IsCompleted = false,
+            });
+
+            // Act
+            var response = await _myNewApi.UpdateTask(request);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task UpdateTaskWithWrongPercentage()
+        {
+            // Arrange
+            var createRequest = new CreateToDoTaskRequest("Do groceries", "Buy milk, bread and eggs", DateTime.UtcNow.AddHours(4));
+            var created = await _myNewApi.CreateTask(createRequest);
+            var request = new UpdateToDoTaskRequest(new ToDoTaskDTO()
+            {
+                Id = created.Content.Id,
+                Title = "New title",
+                Description = created.Content.Description,
+                ExpirationDate = created.Content.ExpirationDate,
+                PercentOfCompletness = 110,
+                IsCompleted = created.Content.IsCompleted,
+            });
+
+            // Act
+            var response = await _myNewApi.UpdateTask(request);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task UpdateTaskWithWrongExpirationDate()
+        {
+            // Arrange
+            var createRequest = new CreateToDoTaskRequest("Do groceries", "Buy milk, bread and eggs", DateTime.UtcNow.AddHours(4));
+            var created = await _myNewApi.CreateTask(createRequest);
+            var request = new UpdateToDoTaskRequest(new ToDoTaskDTO()
+            {
+                Id = created.Content.Id,
+                Title = "New title",
+                Description = created.Content.Description,
+                ExpirationDate = DateTime.UtcNow.AddDays(-1),
+                PercentOfCompletness = created.Content.PercentOfCompletness,
+                IsCompleted = created.Content.IsCompleted,
+            });
+
+            // Act
+            var response = await _myNewApi.UpdateTask(request);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
         public async Task GetTaskById()
         {
             // Arrange
@@ -88,6 +170,18 @@ namespace ToDoTaskApi.Tests
             response.Content.Id.Should().Be(created.Content.Id);
         }
 
+
+        [Fact]
+        public async Task GetTaskByNotExistingId()
+        {
+            Debugger.Launch();
+            // Act
+            var response = await _myNewApi.GetTaskById(Guid.NewGuid());
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
         [Fact]
         public async Task DeleteTask()
         {
@@ -100,6 +194,17 @@ namespace ToDoTaskApi.Tests
 
             // Assert
             response.IsSuccessStatusCode.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task DeleteNotExistingTask()
+        {
+            Debugger.Launch();
+            // Act
+            var response = await _myNewApi.DeleteTask(Guid.NewGuid());
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
         [Fact]
@@ -119,6 +224,35 @@ namespace ToDoTaskApi.Tests
             response.Content.PercentOfCompletness.Should().Be(75);
         }
 
+        [Fact]
+        public async Task SetPercentageOfNotExisitngTask()
+        {
+            // Arrange
+            var request = new SetToDoTaskPercentRequest(Guid.NewGuid(), 75);
+
+            // Act
+            var response = await _myNewApi.SetPercentage(request);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task SetWrongPercentage()
+        {
+            // Arrange
+            var createRequest = new CreateToDoTaskRequest("Task with progress", "Progress test", DateTime.UtcNow.AddHours(5));
+            var created = await _myNewApi.CreateTask(createRequest);
+
+            var request = new SetToDoTaskPercentRequest(created.Content.Id, 275);
+
+            // Act
+            var response = await _myNewApi.SetPercentage(request);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
 
         [Fact]
         public async Task MarkAsDone()
@@ -133,6 +267,16 @@ namespace ToDoTaskApi.Tests
             // Assert
             response.Content.Should().NotBeNull();
             response.Content.IsCompleted.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task MarkNotExistingTaskAsDone()
+        {
+            // Act
+            var response = await _myNewApi.MarkAsDone(Guid.NewGuid());
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
         [Fact]

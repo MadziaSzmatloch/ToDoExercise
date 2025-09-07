@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\ToDoTaskApi.Abstractions\ToDoTaskApi.Abstractions.csproj" />
+    </ItemGroup>
+
 </Project>

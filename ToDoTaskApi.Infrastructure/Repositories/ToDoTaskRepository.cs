@@ -25,7 +25,7 @@ namespace ToDoTaskApi.Infrastructure.Repositories
 
         public async Task<bool> Delete(Guid id)
         {
-            var forDelete = await _toDoTasks.FirstAsync(x => x.Id == id);
+            var forDelete = await _toDoTasks.FirstOrDefaultAsync(x => x.Id == id);
             if (forDelete is null)
                 return false;
             _toDoTasks.Remove(forDelete);

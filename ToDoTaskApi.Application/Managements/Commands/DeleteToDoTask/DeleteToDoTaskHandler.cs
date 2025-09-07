@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MediatR;
-using ToDoTaskApi.Application.Exceptions;
+﻿using MediatR;
+using ToDoTaskApi.Abstractions.Exceptions;
 using ToDoTaskApi.Domain.Interfaces;
 
 namespace ToDoTaskApi.Application.Managements.Commands.DeleteToDoTask

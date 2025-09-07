@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using ToDoTaskApi.Application.DTO;
-using ToDoTaskApi.Application.Exceptions;
+using ToDoTaskApi.Abstractions.Exceptions;
 using ToDoTaskApi.Application.Mappers;
 using ToDoTaskApi.Domain.Interfaces;
 

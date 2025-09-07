@@ -1,4 +1,4 @@
-﻿namespace ToDoTaskApi.Application.Exceptions
+﻿namespace ToDoTaskApi.Abstractions.Exceptions
 {
     public class ValidationException(string message) : Exception(message)
     {

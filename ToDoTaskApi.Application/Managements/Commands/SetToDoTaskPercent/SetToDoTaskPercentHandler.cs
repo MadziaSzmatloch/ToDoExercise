@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using ToDoTaskApi.Application.DTO;
-using ToDoTaskApi.Application.Exceptions;
+using ToDoTaskApi.Abstractions.Exceptions;
 using ToDoTaskApi.Application.Mappers;
 using ToDoTaskApi.Domain.Interfaces;
 
@@ -24,6 +19,11 @@ namespace ToDoTaskApi.Application.Managements.Commands.SetToDoTaskPercent
                 throw new NotFoundException("Task with given id doesn't exist");
 
             task.PercentOfCompletness = request.percentage;
+
+            if(request.percentage == 100)
+            {
+                task.IsCompleted = true;
+            }
 
             if (await _toDoTaskRepository.Update(task))
             {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using ToDoTaskApi.Abstractions.Exceptions;
 
 namespace ToDoTaskApi.Application
 {
@@ -9,6 +10,7 @@ namespace ToDoTaskApi.Application
         public static void AddApplication(this IServiceCollection services)
         {
             services.AddMediatR(config => config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+            services.AddScoped<ErrorHandlingMiddleware>();
         }
     }
 }

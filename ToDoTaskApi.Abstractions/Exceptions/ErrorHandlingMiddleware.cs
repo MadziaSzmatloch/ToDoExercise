@@ -3,7 +3,7 @@ using System.Net;
 using System.Reflection.Metadata;
 using System.Text.Json;
 
-namespace ToDoTaskApi.Application.Exceptions
+namespace ToDoTaskApi.Abstractions.Exceptions
 {
 
     // Middleware for handling exceptions globally in the application

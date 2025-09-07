@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Xml.Linq;
+using ToDoTaskApi.Abstractions.Exceptions;
+using ValidationException = ToDoTaskApi.Abstractions.Exceptions.ValidationException;
 
 namespace ToDoTaskApi.Domain.Entities
 {

@@ -1,10 +1,14 @@
-﻿using FluentAssertions;
+﻿using System.Diagnostics;
+using FluentAssertions;
 using Moq;
+using ToDoTaskApi.Abstractions.Exceptions;
 using ToDoTaskApi.Application.Managements.Commands.CreateToDoTask;
 using ToDoTaskApi.Application.Managements.Commands.DeleteToDoTask;
 using ToDoTaskApi.Application.Managements.Commands.MarkToDoTaskAsDone;
+using ToDoTaskApi.Application.Managements.Commands.SetToDoTaskPercent;
 using ToDoTaskApi.Application.Managements.Commands.UpdateToDoTask;
 using ToDoTaskApi.Application.Managements.Queries.GetAllToDoTask;
+using ToDoTaskApi.Application.Managements.Queries.GetIncomingToDoTask;
 using ToDoTaskApi.Application.Managements.Queries.GetToDoTaskById;
 using ToDoTaskApi.Application.Mappers;
 using ToDoTaskApi.Domain.Entities;
@@ -35,6 +39,147 @@ namespace ToDoTaskApi.Tests
             result.Should().NotBeNull();
             result.Title.Should().Be("Title");
             mockRepo.Verify(r => r.Add(It.IsAny<ToDoTask>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task TestDeleteTaskHandler()
+        {
+            // Arrange
+            var mockRepo = new Mock<IToDoTaskRepository>();
+
+            var taskId = Guid.NewGuid();
+
+            mockRepo.Setup(r => r.Delete(taskId)).ReturnsAsync(true);
+
+            var handler = new DeleteToDoTaskHandler(mockRepo.Object);
+
+            var command = new DeleteToDoTaskRequest(taskId);
+
+            // Act
+            var result = await handler.Handle(command, CancellationToken.None);
+
+            // Assert
+            result.Should().NotBeNull();
+            mockRepo.Verify(r => r.Delete(taskId), Times.Once);
+        }
+
+        [Fact]
+        public async Task TestMarkTaskAsDoneHandler()
+        {
+            // Arrange
+            var mockRepo = new Mock<IToDoTaskRepository>();
+
+            var task = new ToDoTask("Task1", "Desc1", DateTime.UtcNow.AddHours(2));
+
+            mockRepo.Setup(r => r.GetById(task.Id)).ReturnsAsync(task);
+            mockRepo.Setup(r => r.Update(It.IsAny<ToDoTask>())).ReturnsAsync(true);
+
+            var handler = new MarkToDoTaskAsDoneHandler(mockRepo.Object);
+            var command = new MarkToDoTaskAsDoneRequest(task.Id);
+
+            // Act
+            var result = await handler.Handle(command, CancellationToken.None);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.IsCompleted.Should().BeTrue();
+            mockRepo.Verify(r => r.GetById(task.Id), Times.Once);
+            mockRepo.Verify(r => r.Update(It.IsAny<ToDoTask>()), Times.Once);
+        }
+
+
+        [Fact]
+        public async Task TestSetTaskPercentageHandler()
+        {
+            // Arrange
+            var mockRepo = new Mock<IToDoTaskRepository>();
+
+            var task = new ToDoTask("Task1", "Desc1", DateTime.UtcNow.AddHours(2));
+
+            mockRepo.Setup(r => r.GetById(task.Id)).ReturnsAsync(task);
+            mockRepo.Setup(r => r.Update(It.IsAny<ToDoTask>())).ReturnsAsync(true);
+
+            var handler = new SetToDoTaskPercentHandler(mockRepo.Object);
+            var command = new SetToDoTaskPercentRequest(task.Id, 70);
+
+            // Act
+            var result = await handler.Handle(command, CancellationToken.None);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.PercentOfCompletness.Should().Be(70);
+            mockRepo.Verify(r => r.GetById(task.Id), Times.Once);
+            mockRepo.Verify(r => r.Update(It.IsAny<ToDoTask>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task TestSetTaskPercentageHandler_WithPercent100()
+        {
+            // Arrange
+            var mockRepo = new Mock<IToDoTaskRepository>();
+
+            var task = new ToDoTask("Task1", "Desc1", DateTime.UtcNow.AddHours(2));
+
+            mockRepo.Setup(r => r.GetById(task.Id)).ReturnsAsync(task);
+            mockRepo.Setup(r => r.Update(It.IsAny<ToDoTask>())).ReturnsAsync(true);
+
+            var handler = new SetToDoTaskPercentHandler(mockRepo.Object);
+            var command = new SetToDoTaskPercentRequest(task.Id, 100);
+
+            // Act
+            var result = await handler.Handle(command, CancellationToken.None);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.PercentOfCompletness.Should().Be(100);
+            result.IsCompleted.Should().BeTrue();
+            mockRepo.Verify(r => r.GetById(task.Id), Times.Once);
+            mockRepo.Verify(r => r.Update(It.IsAny<ToDoTask>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task TestSetTaskPercentageHandler_WithWrongPercentage()
+        {
+            // Arrange
+            var mockRepo = new Mock<IToDoTaskRepository>();
+
+            var task = new ToDoTask("Task1", "Desc1", DateTime.UtcNow.AddHours(2));
+
+            mockRepo.Setup(r => r.GetById(task.Id)).ReturnsAsync(task);
+            mockRepo.Setup(r => r.Update(It.IsAny<ToDoTask>())).ReturnsAsync(true);
+
+            var handler = new SetToDoTaskPercentHandler(mockRepo.Object);
+            var command = new SetToDoTaskPercentRequest(task.Id, 170);
+
+            // Act
+            var result = async () => await handler.Handle(command, CancellationToken.None);
+
+            // Assert
+            result.Should().ThrowAsync<ValidationException>();
+            mockRepo.Verify(r => r.GetById(task.Id), Times.Once);
+        }
+
+        [Fact]
+        public async Task TestUpdateTaskHandler()
+        {
+            // Arrange
+            var mockRepo = new Mock<IToDoTaskRepository>();
+
+            var task = new ToDoTask("Task1", "Desc1", DateTime.UtcNow.AddHours(2));
+
+            mockRepo.Setup(r => r.Update(It.IsAny<ToDoTask>())).ReturnsAsync(true);
+
+            var handler = new UpdateToDoTaskHandler(mockRepo.Object);
+            var mapper = new ToDoTaskMapper();
+            var command = new UpdateToDoTaskRequest(mapper.ToDoTaskToToDoTaskDto(task));
+
+            // Act
+            var result = await handler.Handle(command, CancellationToken.None);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Title.Should().Be("Task1");
+            mockRepo.Verify(r => r.Update(It.IsAny<ToDoTask>()), Times.Once);
         }
 
         [Fact]
@@ -88,72 +233,30 @@ namespace ToDoTaskApi.Tests
         }
 
         [Fact]
-        public async Task TestDeleteTaskHandler()
+        public async Task TestIncomingTasksHandler()
         {
             // Arrange
             var mockRepo = new Mock<IToDoTaskRepository>();
 
-            var taskId = Guid.NewGuid();
+            var tasks = new List<ToDoTask>
+            {
+                new ToDoTask("Task1", "Desc1", DateTime.UtcNow.AddHours(2)),
+                new ToDoTask("Task2", "Desc2", DateTime.UtcNow.AddHours(2))
+            };
 
-            mockRepo.Setup(r => r.Delete(taskId)).ReturnsAsync(true);
+            mockRepo.Setup(r => r.GetTasksForPeriod(It.IsAny<DateTime>(), It.IsAny<DateTime>())).ReturnsAsync(tasks);
 
-            var handler = new DeleteToDoTaskHandler(mockRepo.Object);
+            var handler = new GetIncomingToDoTaskHandler(mockRepo.Object);
 
-            var command = new DeleteToDoTaskRequest(taskId);
+            var command = new GetIncomingToDoTaskRequest(Domain.Enums.ToDoTaskPeriod.Today);
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
 
             // Assert
             result.Should().NotBeNull();
-            mockRepo.Verify(r => r.Delete(taskId), Times.Once);
-        }
-
-        [Fact]
-        public async Task TestUpdateTaskHandler()
-        {
-            // Arrange
-            var mockRepo = new Mock<IToDoTaskRepository>();
-
-            var task = new ToDoTask("Task1", "Desc1", DateTime.UtcNow.AddHours(2));
-
-            mockRepo.Setup(r => r.Update(It.IsAny<ToDoTask>())).ReturnsAsync(true);
-
-            var handler = new UpdateToDoTaskHandler(mockRepo.Object);
-            var mapper = new ToDoTaskMapper();
-            var command = new UpdateToDoTaskRequest(mapper.ToDoTaskToToDoTaskDto(task));
-
-            // Act
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Title.Should().Be("Task1");
-            mockRepo.Verify(r => r.Update(It.IsAny<ToDoTask>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task TestMarkTaskAsDoneHandler()
-        {
-            // Arrange
-            var mockRepo = new Mock<IToDoTaskRepository>();
-
-            var task = new ToDoTask("Task1", "Desc1", DateTime.UtcNow.AddHours(2));
-
-            mockRepo.Setup(r => r.GetById(task.Id)).ReturnsAsync(task);
-            mockRepo.Setup(r => r.Update(It.IsAny<ToDoTask>())).ReturnsAsync(true);
-
-            var handler = new MarkToDoTaskAsDoneHandler(mockRepo.Object);
-            var command = new MarkToDoTaskAsDoneRequest(task.Id);
-
-            // Act
-            var result = await handler.Handle(command, CancellationToken.None);
-
-            // Assert
-            result.Should().NotBeNull();
-            result.IsCompleted.Should().BeTrue();
-            mockRepo.Verify(r => r.GetById(task.Id), Times.Once);
-            mockRepo.Verify(r => r.Update(It.IsAny<ToDoTask>()), Times.Once);
+            result.Count().Should().Be(2);
+            mockRepo.Verify(r => r.GetTasksForPeriod(It.IsAny<DateTime>(), It.IsAny<DateTime>()), Times.Once);
         }
     }
 }
