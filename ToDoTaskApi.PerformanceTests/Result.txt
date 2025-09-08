@@ -1,0 +1,4 @@
+
+--------------- ASSERTIONS ---------------
+[PASS] Expected [Counter] ApiCounter to must be greater than 50,00 operations; actual value was 214,95 operations.
+[PASS] Expected TotalCollections [Gen2] to must be less than or equal to 2,00 collections; actual value was 0,00 collections.
